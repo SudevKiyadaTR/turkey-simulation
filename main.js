@@ -1,4 +1,4 @@
-import * as THREE from 'three/src/Three.js';
+import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
 import { Vector3 } from 'three/src/Three.js';
