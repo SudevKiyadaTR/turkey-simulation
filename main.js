@@ -75,7 +75,7 @@ function addLights() {
   light.castShadow = true; // default false
   scene.add(light);
 
-  var d = 70;
+  var d = 72;
   light.shadow.camera.left = - d;
   light.shadow.camera.right = d;
   light.shadow.camera.top = d;
