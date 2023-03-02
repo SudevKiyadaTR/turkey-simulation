@@ -235,8 +235,6 @@ function initTheatre() {
   sheet = project.sheet('Animated scene');
 
   const cameraObj = sheet.object('Camera', {
-    // Note that the rotation is in radians
-    // (full rotation: 2 * Math.PI)
     position: types.compound({
       x: types.number(camera.position.x, { range: [-200, 200] }),
       y: types.number(camera.position.y, { range: [-200, 200] }),
