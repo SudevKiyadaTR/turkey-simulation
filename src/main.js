@@ -21,7 +21,7 @@ var mesh = null, sampler = null;
 var groundA, groundB, groundC;
 var meshA, meshB, meshC;
 
-const count = 10000;
+const count = 105000;
 
 const dummy = new THREE.Object3D();
 
@@ -68,25 +68,25 @@ window.onresize = () => {
   camera.updateProjectionMatrix();
 }
 
-function addLights() {
+function addLights(m) {
   //Create a DirectionalLight and turn on shadows for the light
   const light = new THREE.DirectionalLight(0xffffff, 8);
-  light.position.set(-80, 30, 15);
+  light.position.set(m * 50, 50, 100);
   light.castShadow = true; // default false
   scene.add(light);
 
-  var d = 72;
-  light.shadow.camera.left = - d;
+  var d = 1000;
+  light.shadow.camera.left = -d;
   light.shadow.camera.right = d;
   light.shadow.camera.top = d;
-  light.shadow.camera.bottom = - d;
+  light.shadow.camera.bottom = -d;
 
   //Set up shadow properties for the light
-  light.shadow.mapSize.width = 512; // default
-  light.shadow.mapSize.height = 512; // default
+  light.shadow.mapSize.width = 2048; // default
+  light.shadow.mapSize.height = 2048; // default
   light.shadow.camera.near = 0.1; // default
   light.shadow.camera.far = 500; // default
-  light.shadow.radius = 80;
+  light.shadow.radius = 8;
 }
 
 function addRectLight() {
@@ -107,7 +107,7 @@ function addModels() {
   groundA.geometry.rotateX(-Math.PI / 2);
   groundA.position.set(-25, 0, -25);
   groundA.receiveShadow = true;
-  scene.add(groundA);
+  // scene.add(groundA);
 
   console.log('groundA: ' + groundA.geometry.getAttribute('position'));
 
@@ -116,35 +116,35 @@ function addModels() {
   groundB.position.set(25, 0, -25);
   groundB.receiveShadow = true;
   groundB.material.color = new THREE.Color('orangered');
-  scene.add(groundB);
+  // scene.add(groundB);
 
   console.log('groundB: ' + groundB.geometry.getAttribute('position'));
 
   groundC = new THREE.Mesh(planeGeometry.clone(), planeMaterial.clone());
-  groundC.geometry.scale(2, 1, 1);
-  groundC.position.set(0, 0, 25);
+  groundC.geometry.scale(8, 1, 20);
+  groundC.position.set(0, 0, -500);
   groundC.receiveShadow = true;
   groundC.material.color = new THREE.Color('deeppink');
   scene.add(groundC);
 
   const geo = new THREE.BoxGeometry(1, 3, 1);
   // const material = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 1.0, reflectivity: 0.5, metalness: 0.0 });
-  const material = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 1, metalness: 0, reflectivity: 0.5 });
+  const material = new THREE.MeshPhysicalMaterial({ color: 0x444444, roughness: 1, metalness: 0, reflectivity: 0.5 });
   meshA = new THREE.InstancedMesh(geo, material, count);
   meshA.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 1.5, 0));
   meshA.castShadow = true;
   meshA.receiveShadow = true;
   meshA.position.set(-25, 0, -25);
-  scene.add(meshA);
+  // scene.add(meshA);
 
   meshB = meshA.clone();
   meshB.position.set(25, 0, -25);
   meshB.castShadow = true;
   meshB.receiveShadow = true;
-  scene.add(meshB);
+  // scene.add(meshB);
 
   meshC = meshA.clone();
-  meshC.position.set(0, 0, 25);
+  meshC.position.set(0, 0, -500);
   meshC.castShadow = true;
   meshC.receiveShadow = true;
   scene.add(meshC);
@@ -189,7 +189,7 @@ function resampleParticle(i, msh) {
   } else if (msh == meshB) {
     dummy.scale.set(Math.random() * 1.5 + 0.2, Math.random() * 2 + 0.2, Math.random() * 1.5 + 0.2);
   } else if (msh == meshC) {
-    dummy.scale.set(Math.random() * 2 + 0.2, Math.random() * 1 + 0.2, Math.random() * 2 + 0.2);
+    dummy.scale.set(Math.random() * 1 + 0.2, Math.random() * 1 + 0.2, Math.random() * 1 + 0.2);
   }
 
   dummy.updateMatrix();
@@ -208,7 +208,7 @@ function animate() {
 function addBuildings() {
 
   const planeGeo = new THREE.PlaneGeometry(100, 100);
-  const planeMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.4, roughness: 0.8 });
+  const planeMat = new THREE.MeshLambertMaterial({ color: 0xffffff, metalness: 0.4, roughness: 0.8 });
   const plane = new THREE.Mesh(planeGeo, planeMat);
   plane.geometry.rotateX(-Math.PI / 2);
   plane.position.set(0, -3, 0);
@@ -273,12 +273,13 @@ function initTheatre() {
 }
 
 initThree();
-addLights();
+addLights(1);
+addLights(-1);
 // addRectLight();
 addModels();
 resample(groundA, meshA, 1000);
 resample(groundB, meshB, 500);
-resample(groundC, meshC, 1000);
+resample(groundC, meshC, 105000);
 // addBuildings();
 animate();
 initTheatre();
