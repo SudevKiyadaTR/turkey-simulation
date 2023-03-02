@@ -269,7 +269,7 @@ function initTheatre() {
     });
   });
 
-  project.ready.then(() => sheet.sequence.play({ iterationCount: Infinity }));
+  // project.ready.then(() => sheet.sequence.play({ iterationCount: Infinity }));
 }
 
 initThree();
