@@ -71,7 +71,7 @@ window.onresize = () => {
 function addLights(m) {
   //Create a DirectionalLight and turn on shadows for the light
   const light = new THREE.DirectionalLight(0xffffff, 8);
-  light.position.set(m * 50, 50, 100);
+  light.position.set(m * 200, 30, 10);
   light.castShadow = true; // default false
   scene.add(light);
 
@@ -85,16 +85,16 @@ function addLights(m) {
   light.shadow.mapSize.width = 2048; // default
   light.shadow.mapSize.height = 2048; // default
   light.shadow.camera.near = 0.1; // default
-  light.shadow.camera.far = 500; // default
-  light.shadow.radius = 8;
+  light.shadow.camera.far = 1000; // default
+  light.shadow.radius = 18;
 }
 
 function addRectLight() {
-  const width = 50;
-  const height = 50;
-  const intensity = 5;
+  const width = 200;
+  const height = 200;
+  const intensity = 10;
   const rectLight = new THREE.RectAreaLight(0xffffff, intensity, width, height);
-  rectLight.position.set(0, 25, 0);
+  rectLight.position.set(0, 25, 400);
   rectLight.lookAt(0, 0, 0);
   scene.add(rectLight)
 }
@@ -102,7 +102,7 @@ function addRectLight() {
 function addModels() {
   // add plane as ground
   const planeGeometry = new THREE.PlaneGeometry(50, 50).toNonIndexed();
-  const planeMaterial = new THREE.MeshPhysicalMaterial({ color: 'gray', roughness: 0.5, metalness: 0 });
+  const planeMaterial = new THREE.MeshPhysicalMaterial({ color: 'gray', roughness: 1.0, metalness: 0, reflectivity: 0 });
   groundA = new THREE.Mesh(planeGeometry, planeMaterial);
   groundA.geometry.rotateX(-Math.PI / 2);
   groundA.position.set(-25, 0, -25);
@@ -121,15 +121,15 @@ function addModels() {
   console.log('groundB: ' + groundB.geometry.getAttribute('position'));
 
   groundC = new THREE.Mesh(planeGeometry.clone(), planeMaterial.clone());
-  groundC.geometry.scale(8, 1, 20);
-  groundC.position.set(0, 0, -500);
+  groundC.geometry.scale(12, 1, 14);
+  groundC.position.set(0, 0, 0);
   groundC.receiveShadow = true;
   groundC.material.color = new THREE.Color('deeppink');
   scene.add(groundC);
 
   const geo = new THREE.BoxGeometry(1, 3, 1);
   // const material = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 1.0, reflectivity: 0.5, metalness: 0.0 });
-  const material = new THREE.MeshPhysicalMaterial({ color: 0x444444, roughness: 1, metalness: 0, reflectivity: 0.5 });
+  const material = new THREE.MeshPhysicalMaterial({ color: 0x444444, roughness: 1, metalness: 0, reflectivity: 0.0 });
   meshA = new THREE.InstancedMesh(geo, material, count);
   meshA.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 1.5, 0));
   meshA.castShadow = true;
@@ -144,7 +144,7 @@ function addModels() {
   // scene.add(meshB);
 
   meshC = meshA.clone();
-  meshC.position.set(0, 0, -500);
+  meshC.position.set(0, 0, 0);
   meshC.castShadow = true;
   meshC.receiveShadow = true;
   scene.add(meshC);
@@ -200,7 +200,7 @@ function resampleParticle(i, msh) {
 function animate() {
   requestAnimationFrame(animate);
 
-  controls.update();
+  // controls.update();
 
   renderer.render(scene, camera);
 }
@@ -236,19 +236,29 @@ function initTheatre() {
 
   const cameraObj = sheet.object('Camera', {
     position: types.compound({
-      x: types.number(camera.position.x, { range: [-200, 200] }),
-      y: types.number(camera.position.y, { range: [-200, 200] }),
-      z: types.number(camera.position.z, { range: [-200, 200] }),
+      x: types.number(camera.position.x, { range: [-2000, 2000] }),
+      y: types.number(camera.position.y, { range: [-2000, 2000] }),
+      z: types.number(camera.position.z, { range: [-2000, 2000] }),
     }),
     fov: types.number(camera.fov, { range: [0, 100] }),
+    zoom: types.number(camera.fov, { range: [0, 100] }),
+    lookVector: types.compound({
+      lX: types.number(0, { range: [-2000, 2000] }),
+      lY: types.number(0, { range: [-2000, 2000] }),
+      lZ: types.number(0, { range: [-2000, 2000] }),
+    }),
   });
 
   cameraObj.onValuesChange((values) => {
     const { x, y, z } = values.position;
+    const { lX, lY, lZ } = values.lookVector;
 
     camera.position.set(x, y, z);
     camera.fov = values.fov;
+    camera.zoom = values.zoom;
     camera.updateProjectionMatrix();
+
+    camera.lookAt(lX, lY, lZ);
   });
 
   [groundA, groundB, groundC].forEach((grd, i) => {
@@ -269,16 +279,17 @@ function initTheatre() {
     });
   });
 
-  // project.ready.then(() => sheet.sequence.play({ iterationCount: Infinity }));
+  project.ready.then(() => sheet.sequence.play({ iterationCount: Infinity }));
 }
 
 initThree();
 addLights(1);
+addLights(0);
 addLights(-1);
 // addRectLight();
 addModels();
-resample(groundA, meshA, 1000);
-resample(groundB, meshB, 500);
+// resample(groundA, meshA, 1000);
+// resample(groundB, meshB, 500);
 resample(groundC, meshC, 105000);
 // addBuildings();
 animate();
