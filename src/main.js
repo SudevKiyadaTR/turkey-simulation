@@ -7,7 +7,7 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 
 import studio from '@theatre/studio';
 import { getProject, types } from '@theatre/core';
-import state from '/src/state2.json';
+import state from '/src/state4.json';
 const config = { state };
 var project = null, sheet = null;
 
